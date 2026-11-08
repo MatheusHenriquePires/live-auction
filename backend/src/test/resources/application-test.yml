@@ -1,0 +1,6 @@
+auction:
+  security:
+    jwt:
+      secret: test-only-secret-0123456789abcdefghijklmnop
+    # Production uses 12; 4 keeps the test suite fast.
+    bcrypt-strength: 4
