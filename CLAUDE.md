@@ -9,8 +9,10 @@ Full specification: see `SPEC.md`. Always read it before starting a phase.
 - Work **one phase at a time** (see SPEC.md §18). Do not start the next phase until the Definition of Done of the current one is met.
 - Before writing code for a phase: briefly state the plan. After: run the build and tests, report results.
 - Never commit secrets. Use environment variables + `.env.example`.
-- All code, comments, commit messages, API docs and README are in **English**.
-- Commit style: Conventional Commits (`feat:`, `fix:`, `test:`, `docs:`, `chore:`). Small, focused commits.
+- All code, comments, API docs and README are in **English**.
+- **Commit messages are in Brazilian Portuguese (pt-BR).** Style: Conventional Commits with the type prefix kept as is
+  (`feat:`, `fix:`, `test:`, `docs:`, `chore:`) and the description in pt-BR, e.g. `feat: adiciona motor de lances`.
+  Small, focused commits. No AI co-author trailers.
 - Money is **always** `long` cents (never `double`/`float`). Timestamps are UTC `Instant`; the **server clock is the only clock**.
 - Postgres is the source of truth. Redis is a performance/atomicity layer and must be rebuildable from Postgres.
 - Every new behavior needs a test. Concurrency-sensitive code needs a concurrency test.
