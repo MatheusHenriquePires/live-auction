@@ -9,7 +9,7 @@ Non-goals: payments, shipping, image upload (use image URLs), multi-currency.
 | Area | Choice |
 |---|---|
 | Language/Runtime | Java 21, Maven wrapper |
-| Framework | Spring Boot 3.3+ (Web, Validation, Security, Data JPA, WebSocket, AMQP, Data Redis, Actuator) |
+| Framework | Spring Boot 4.1 (3.x is no longer offered by Spring Initializr) (Web, Validation, Security, Data JPA, WebSocket, AMQP, Data Redis, Actuator) |
 | DB | PostgreSQL 16 + Flyway |
 | Cache/Atomicity | Redis 7 (Lua scripts, pub/sub for cross-instance fan-out) |
 | Broker | RabbitMQ 3 (management image) |
@@ -163,7 +163,7 @@ Ops
 - `GET /time` → `{serverTime}` for client clock-offset calculation
 
 ### Error format (RFC 7807 `application/problem+json`)
-`{type, title, status, detail, code, traceId}`. Domain codes: `AUCTION_NOT_ACTIVE`, `AUCTION_ENDED`, `BID_TOO_LOW` (include `minimumAmount`), `ALREADY_LEADER`, `SELLER_CANNOT_BID`, `DUPLICATE_BID` (returns original result, HTTP 200), `VALIDATION_ERROR`, `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`.
+`{type, title, status, detail, code, traceId}`. Domain codes: `AUCTION_NOT_ACTIVE`, `AUCTION_ENDED`, `BID_TOO_LOW` (include `minimumAmount`), `ALREADY_LEADER`, `SELLER_CANNOT_BID`, `DUPLICATE_BID` (returns original result, HTTP 200), `VALIDATION_ERROR`, `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `EMAIL_ALREADY_REGISTERED` (409), `AUCTION_NOT_CANCELLABLE` (409), `CONFLICT` (409, concurrent modification), `INTERNAL_ERROR` (500).
 
 ## 8. WebSocket / STOMP protocol
 - Endpoint: `/ws` (SockJS fallback optional). Auth: JWT sent in STOMP `CONNECT` header `Authorization: Bearer ...`, validated by a `ChannelInterceptor`. Anonymous users may **subscribe** to public topics but not **send**.
@@ -243,6 +243,7 @@ Test the script directly (Testcontainers Redis) with table-driven cases.
 
 ## 12. Security
 - BCrypt (strength 12). JWT HS256 with secret from env (min 32 chars), claims: `sub`, `email`, `role`.
+- Refresh tokens are opaque, stored only as SHA-256, and rotated on every use. Presenting a revoked token revokes all of the user's tokens (reuse detection, RFC 9700 §4.14.2), so clients must refresh single-flight.
 - Stateless `SecurityFilterChain`; public: `GET /auctions/**`, `/auth/**`, `/time`, swagger, actuator health.
 - Rate limiting on `POST /auctions/{id}/bids` and WS SEND: max 5 bids/second/user (Redis token bucket or Bucket4j). Return `429`.
 - CORS configured via env. Input validation with Bean Validation. No stack traces in responses.
