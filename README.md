@@ -1,5 +1,7 @@
 # Live Auction
 
+[![CI](https://github.com/MatheusHenriquePires/live-auction/actions/workflows/ci.yml/badge.svg)](https://github.com/MatheusHenriquePires/live-auction/actions/workflows/ci.yml)
+
 Real-time auction platform where many users bid at the same time, everyone sees bids instantly,
 and the system stays **correct under concurrency**.
 
